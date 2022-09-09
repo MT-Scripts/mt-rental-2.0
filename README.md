@@ -1,7 +1,7 @@
 # MT RENTAL 2.0
 A full configurable rental script for QBCore
 
-# Youtube preview: https://www.youtube.com/watch?v=HacwQPnuVOQ
+Youtube preview: https://www.youtube.com/watch?v=HacwQPnuVOQ
 
 # Add to your qb-core/shared/items.lua:
 ```
