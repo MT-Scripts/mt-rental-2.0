@@ -1,5 +1,7 @@
 # MT RENTAL 2.0 INSTALLATION GUIDE
 
+# Youtube preview: https://www.youtube.com/watch?v=HacwQPnuVOQ
+
 # Add to your qb-core/shared/items.lua:
 ```
 	['renting_contract'] 			 = {['name'] = 'renting_contract', 				['label'] = 'Renting Contract', 				['weight'] = 500, 		['type'] = 'item', 		['image'] = 'renting_contract.png', 		['unique'] = true, 		['useable'] = false, 	['shouldClose'] = true,	   ['combinable'] = nil,   ['description'] = ''},
