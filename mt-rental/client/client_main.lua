@@ -63,7 +63,7 @@ RegisterNetEvent('mt-rental:client:RentalMenu', function(Spot, VehicleSpawnLocat
         }
         for k, v in pairs(Config.RentalSpots[Spot]["AvailableVehicles"]) do
             local item = {}
-            item.header = v.VehicleLableName .. " - " .. v.RentPrice .. "$"
+            item.header = v.VehicleLableName .. " - " .. v.RentPrice .. "$" .. Lang.PerMinute
             item.icon = v.MenuIcon
             item.params = {
                 event = "mt-rental:client:RentVehicleInput",
@@ -92,7 +92,7 @@ RegisterNetEvent('mt-rental:client:RentalMenu', function(Spot, VehicleSpawnLocat
             },
             {
                 header = Lang.CancelCurrentRenting,
-                icon = "fas fa-circle-xmark",
+                icon = "fas fa-circle-ban",
                 params = {
                     event = "mt-rental:client:CancelRenting",
                 }
@@ -154,6 +154,8 @@ RegisterNetEvent('mt-rental:client:RentVehicle', function(data)
     local coords = data.VehicleSpawnLocation
     local vehicle = data.VehicleSpawnName
     local PlayerData = QBCore.Functions.GetPlayerData()
+    local RentPrice = data.RentPrice * data.TimeAmount
+    local FeesPrice = data.RentPrice * Config.PriceMultiplier
 
     QBCore.Functions.TriggerCallback("mt-rental:server:VerifyMoney", function(hasMoney)
         if (hasMoney) then
@@ -163,12 +165,12 @@ RegisterNetEvent('mt-rental:client:RentVehicle', function(data)
                     exports['LegacyFuel']:SetFuel(veh, 100.0)
                     TriggerEvent("vehiclekeys:client:SetOwner", GetVehicleNumberPlateText(veh))
                     SetVehicleEngineOn(veh, true, true)
-                    TriggerServerEvent('mt-rental:server:RentVehicle', data.RentPrice, data.VehicleLableName, GetVehicleNumberPlateText(veh), data.TimeAmount,PlayerData)
+                    TriggerServerEvent('mt-rental:server:RentVehicle', RentPrice, data.VehicleLableName, GetVehicleNumberPlateText(veh), data.TimeAmount,PlayerData)
                     Vehicle = veh
                 end, coords, true)
                 IsRenting = true
-                Wait(data.TimeAmount*60000)
                 if IsRenting == true then
+                    Wait(data.TimeAmount*60000)
                     if Config.PhoneName == 'qb-phone' then
                         TriggerServerEvent('qb-phone:server:sendNewMail', {
                             sender = Lang.MailSender,
@@ -185,7 +187,7 @@ RegisterNetEvent('mt-rental:client:RentVehicle', function(data)
                     CreateThread(function()
                         while IsRenting do
                             Wait(Config.BillingAfterMailTime*60000)
-                            TriggerServerEvent('mt-rental:server:BillPlayer')
+                            TriggerServerEvent('mt-rental:server:BillPlayer', FeesPrice)
                             TriggerEvent('mt-rental:client:Mail2')
                         end
                     end)

@@ -33,12 +33,12 @@ RegisterNetEvent('mt-rental:server:RemoveContract', function()
     TriggerClientEvent('inventory:client:ItemBox', source, QBCore.Shared.Items["renting_contract"], "remove", 1)
 end)
 
-RegisterNetEvent('mt-rental:server:BillPlayer', function()
+RegisterNetEvent('mt-rental:server:BillPlayer', function(FeesPrice)
     local Player = QBCore.Functions.GetPlayer(source)
     if Config.PhoneName == "qb-phone" then
         MySQL.Async.insert('INSERT INTO phone_invoices (citizenid, amount, society, sender, sendercitizenid) VALUES (?, ?, ?, ?, ?)',{
             Player.PlayerData.citizenid,
-            Config.FeesPrice,
+            FeesPrice,
             'Renting', 
             'Jóse das couves', 
             'CVS04712'
@@ -47,7 +47,7 @@ RegisterNetEvent('mt-rental:server:BillPlayer', function()
     elseif Config.PhoneName == "gksphone" then
         MySQL.Async.execute('INSERT INTO gksphone_invoices (citizenid, amount, society, sender, sendercitizenid, label) VALUES (@citizenid, @amount, @society, @sender, @sendercitizenid, @label)', {
             ['@citizenid'] = Player.PlayerData.citizenid,
-            ['@amount'] = Config.FeesPrice,
+            ['@amount'] = FeesPrice,
             ['@society'] = 'Renting',
             ['@sender'] = 'Jóse das couves',
             ['@sendercitizenid'] = 'CVS04712',
