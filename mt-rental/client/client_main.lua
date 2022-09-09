@@ -92,7 +92,7 @@ RegisterNetEvent('mt-rental:client:RentalMenu', function(Spot, VehicleSpawnLocat
             },
             {
                 header = Lang.CancelCurrentRenting,
-                icon = "fas fa-circle-ban",
+                icon = "fas fa-ban",
                 params = {
                     event = "mt-rental:client:CancelRenting",
                 }
@@ -171,26 +171,30 @@ RegisterNetEvent('mt-rental:client:RentVehicle', function(data)
                 IsRenting = true
                 if IsRenting == true then
                     Wait(data.TimeAmount*60000)
-                    if Config.PhoneName == 'qb-phone' then
-                        TriggerServerEvent('qb-phone:server:sendNewMail', {
-                            sender = Lang.MailSender,
-                            subject = Lang.MailSubject,
-                            message = Lang.MailMessage,
-                        })
-                    elseif Config.PhoneName == 'gksphone' then
-                        TriggerServerEvent('gksphone:NewMail', {
-                            sender = Lang.MailSender,
-                            subject = Lang.MailSubject,
-                            message = Lang.MailMessage,
-                        })
-                    end
-                    CreateThread(function()
-                        while IsRenting do
-                            Wait(Config.BillingAfterMailTime*60000)
-                            TriggerServerEvent('mt-rental:server:BillPlayer', FeesPrice)
-                            TriggerEvent('mt-rental:client:Mail2')
+                    if IsRenting == true then
+                        if Config.PhoneName == 'qb-phone' then
+                            TriggerServerEvent('qb-phone:server:sendNewMail', {
+                                sender = Lang.MailSender,
+                                subject = Lang.MailSubject,
+                                message = Lang.MailMessage,
+                            })
+                        elseif Config.PhoneName == 'gksphone' then
+                            TriggerServerEvent('gksphone:NewMail', {
+                                sender = Lang.MailSender,
+                                subject = Lang.MailSubject,
+                                message = Lang.MailMessage,
+                            })
                         end
-                    end)
+                        CreateThread(function()
+                            while IsRenting == true do
+                                Wait(Config.BillingAfterMailTime*60000)
+                                if IsRenting == true then
+                                TriggerServerEvent('mt-rental:server:BillPlayer', FeesPrice)
+                                TriggerEvent('mt-rental:client:Mail2')
+                                end
+                            end
+                        end)
+                    end
                 end
             elseif IsRenting == true then
                 QBCore.Functions.Notify(Lang.AlreadyRenting, 'error', 7500)
