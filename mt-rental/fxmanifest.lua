@@ -16,8 +16,4 @@ shared_scripts {
     "shared/*.lua",
 }
 
-escrow_ignore {
-    "shared/*.lua",
-}
-
 lua54 "yes"
