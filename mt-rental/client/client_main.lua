@@ -5,6 +5,7 @@ local Vehicle = nil
 CreateThread(function()
     for k, v in pairs(Config.RentalSpots) do
         local PedLoc = v.PedCoords
+        local Spot = v.SpotName
         RequestModel(GetHashKey(v.PedModel))
         while not HasModelLoaded(GetHashKey(v.PedModel)) do
             Wait(1)
@@ -27,7 +28,7 @@ CreateThread(function()
                     icon = "fas fa-clipboard",
                     label = v.LabelSpotName,
                     action = function()
-                        TriggerEvent('mt-rental:client:RentalMenu', v.SpotName, v.VehicleSpawnLocation)
+                        TriggerEvent('mt-rental:client:RentalMenu', Spot, v.VehicleSpawnLocation)
                     end
                 },
             },
